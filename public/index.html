@@ -1,0 +1,107 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Expense Tracker</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-icon">₹</span> PennyWise</div>
+    <span class="tagline">Your money, in focus.</span>
+  </header>
+
+  <main class="container">
+    <section class="intro">
+      <p class="eyebrow">PERSONAL FINANCE</p>
+      <h1>Take control of<br><span>your money.</span></h1>
+      <p class="subtitle">A clearer picture of what comes in and what goes out.</p>
+    </section>
+
+    <section class="summary">
+      <article class="summary-card balance">
+        <p>Total balance</p>
+        <h2 id="balance">₹0.00</h2>
+        <span>Income minus expenses</span>
+      </article>
+      <article class="summary-card">
+        <p>Total income</p>
+        <h2 id="income">₹0.00</h2>
+        <span class="positive">Money received</span>
+      </article>
+      <article class="summary-card">
+        <p>Total expenses</p>
+        <h2 id="expenses">₹0.00</h2>
+        <span class="negative">Money spent</span>
+      </article>
+    </section>
+
+    <section class="content-grid">
+      <article class="panel">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">NEW TRANSACTION</p>
+            <h2>Add a transaction</h2>
+          </div>
+          <span class="plus-icon">+</span>
+        </div>
+
+        <form id="transaction-form">
+          <label for="type">Transaction type</label>
+          <select id="type" required>
+            <option value="expense">Expense</option>
+            <option value="income">Income</option>
+          </select>
+
+          <label for="amount">Amount (₹)</label>
+          <input id="amount" type="number" min="0.01" step="0.01"
+                 placeholder="e.g. 500" required>
+
+          <label for="category">Category</label>
+          <select id="category" required>
+            <option value="Food">Food</option>
+            <option value="Transport">Transport</option>
+            <option value="Education">Education</option>
+            <option value="Shopping">Shopping</option>
+            <option value="Bills">Bills</option>
+            <option value="Salary">Salary</option>
+            <option value="Freelance">Freelance</option>
+            <option value="Other">Other</option>
+          </select>
+
+          <label for="date">Date</label>
+          <input id="date" type="date" required>
+
+          <label for="note">Note (optional)</label>
+          <input id="note" type="text" maxlength="120"
+                 placeholder="What was it for?">
+
+          <button class="primary-button" type="submit">Add transaction</button>
+          <p id="form-message" class="form-message" role="status"></p>
+        </form>
+      </article>
+
+      <article class="panel transactions-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">YOUR ACTIVITY</p>
+            <h2>Transactions</h2>
+          </div>
+          <button id="clear-button" class="text-button" type="button">
+            Clear all
+          </button>
+        </div>
+
+        <div id="transaction-list" class="transaction-list">
+          <p class="empty-state">Loading your transactions...</p>
+        </div>
+      </article>
+    </section>
+
+    <footer>Built with Core Java, HTML, CSS and JavaScript.</footer>
+  </main>
+</body>
+</html>
