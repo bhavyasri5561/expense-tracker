@@ -1,0 +1,433 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finora | Expense Tracker</title>
+<style>
+:root {
+  --bg: #f5f7fb;
+  --navy: #172b4d;
+  --green: #16a783;
+  --muted: #8995a7;
+  --border: #e9edf4;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--navy);
+}
+.layout { display: flex; min-height: 100vh; }
+.sidebar {
+  width: 235px;
+  background: #fff;
+  padding: 30px 20px;
+  border-right: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.brand { font-size: 25px; font-weight: 800; margin-bottom: 45px; }
+.brand span { color: var(--green); }
+.nav-label {
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+  margin: 28px 10px 12px;
+}
+.nav {
+  display: block;
+  text-decoration: none;
+  color: #758197;
+  padding: 13px 14px;
+  margin: 5px 0;
+  border-radius: 10px;
+  font-size: 14px;
+}
+.nav.active { background: #e8f8f3; color: #078565; font-weight: 700; }
+.main { flex: 1; padding: 32px; min-width: 0; }
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 28px;
+}
+h1 { font-size: 27px; margin: 0 0 7px; }
+.subtitle { color: var(--muted); font-size: 13px; }
+.date { color: #66738a; font-size: 13px; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+.card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 17px;
+  padding: 23px;
+  box-shadow: 0 5px 20px #1c315008;
+}
+.balance {
+  background: linear-gradient(125deg, #173b5c, #176d69);
+  color: white;
+  border: 0;
+}
+.card-label { color: var(--muted); font-size: 13px; }
+.balance .card-label { color: #d0e9e6; }
+.amount { font-size: 29px; font-weight: 750; margin: 15px 0 10px; }
+.balance .amount { font-size: 34px; }
+.small { font-size: 12px; color: var(--muted); }
+.balance .small { color: #d0e9e6; }
+.icon {
+  float: right;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: #e7f8f2;
+  color: var(--green);
+  display: grid;
+  place-items: center;
+  font-size: 19px;
+}
+.expense-icon { background: #fff0e9; color: #e58b55; }
+.section-title {
+  font-size: 17px;
+  margin: 0 0 20px;
+}
+.content-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(260px, 1fr);
+  gap: 18px;
+  margin-top: 22px;
+}
+form { display: grid; gap: 13px; }
+label { font-size: 12px; font-weight: 600; color: #63718a; }
+input, select {
+  display: block;
+  width: 100%;
+  margin-top: 7px;
+  border: 1px solid #e0e6ef;
+  border-radius: 9px;
+  padding: 12px;
+  font: inherit;
+  color: var(--navy);
+  background: white;
+  outline-color: var(--green);
+}
+button {
+  border: 0;
+  border-radius: 9px;
+  background: var(--green);
+  color: white;
+  padding: 13px 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+button:hover { background: #108d6e; }
+.transactions { margin-top: 22px; }
+.transaction {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--border);
+}
+.transaction:last-child { border-bottom: 0; }
+.tx-icon {
+  width: 42px;
+  height: 42px;
+  background: #f0f3fa;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 19px;
+}
+.tx-info { flex: 1; min-width: 0; }
+.tx-name { font-size: 13px; font-weight: 700; }
+.tx-meta { font-size: 11px; color: var(--muted); margin-top: 5px; }
+.tx-amount { font-size: 13px; font-weight: 700; white-space: nowrap; }
+.negative { color: #e1845b; }
+.positive { color: var(--green); }
+.chart-area {
+  height: 180px;
+  display: flex;
+  align-items: end;
+  justify-content: space-around;
+  gap: 12px;
+  padding-top: 15px;
+  border-bottom: 1px solid var(--border);
+}
+.bar-group {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  align-items: center;
+  gap: 9px;
+}
+.bar {
+  width: min(30px, 75%);
+  min-height: 4px;
+  background: #c4eee2;
+  border-radius: 7px 7px 2px 2px;
+}
+.bar.current { background: var(--green); }
+.month { font-size: 11px; color: var(--muted); padding-bottom: 10px; }
+.chart-note { margin-top: 17px; font-size: 12px; color: var(--muted); }
+.empty { color: var(--muted); font-size: 13px; padding: 20px 0; }
+.footer { text-align: center; color: #9aa5b5; font-size: 11px; margin: 25px 0 0; }
+@media(max-width: 950px) {
+  .sidebar { width: 185px; }
+  .main { padding: 22px; }
+  .grid { grid-template-columns: 1fr; }
+  .content-grid { grid-template-columns: 1fr; }
+}
+@media(max-width: 600px) {
+  .layout { display: block; }
+  .sidebar { width: 100%; padding: 16px; border-right: 0; border-bottom: 1px solid var(--border); }
+  .brand { margin-bottom: 12px; }
+  .nav-label { display: none; }
+  .nav { display: inline-block; padding: 9px 10px; font-size: 12px; }
+  .main { padding: 18px 13px; }
+  h1 { font-size: 23px; }
+  .topbar { align-items: flex-start; }
+  .date { text-align: right; max-width: 110px; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">fin<span>ora.</span></div>
+    <div class="nav-label">WORKSPACE</div>
+    <a class="nav active" href="#dashboard">▦ &nbsp; Dashboard</a>
+    <a class="nav" href="#transactions">↕ &nbsp; Transactions</a>
+    <a class="nav" href="#analytics">▥ &nbsp; Analytics</a>
+    <div class="nav-label">YOUR MONEY</div>
+    <a class="nav" href="#add">＋ &nbsp; Add transaction</a>
+  </aside>
+
+  <main class="main" id="dashboard">
+    <header class="topbar">
+      <div>
+        <h1>Good day! 👋</h1>
+        <div class="subtitle">Here's what's happening with your money.</div>
+      </div>
+      <div class="date" id="today"></div>
+    </header>
+
+    <section class="grid">
+      <div class="card balance">
+        <div class="card-label">Total Balance</div>
+        <div class="amount" id="balance">₹0.00</div>
+        <div class="small">Income minus expenses</div>
+      </div>
+      <div class="card">
+        <span class="icon">↙</span>
+        <div class="card-label">Total Income</div>
+        <div class="amount" id="income">₹0.00</div>
+        <div class="small">Money received</div>
+      </div>
+      <div class="card">
+        <span class="icon expense-icon">↗</span>
+        <div class="card-label">Total Expenses</div>
+        <div class="amount" id="expenses">₹0.00</div>
+        <div class="small">Money spent</div>
+      </div>
+    </section>
+
+    <section class="content-grid">
+      <div class="card" id="add">
+        <h2 class="section-title">Add a transaction</h2>
+        <form id="transactionForm">
+          <label>Transaction name
+            <input id="name" type="text" placeholder="e.g. Groceries, Salary" required maxlength="60">
+          </label>
+          <label>Amount (₹)
+            <input id="amount" type="number" placeholder="Enter amount" min="0.01" step="0.01" required>
+          </label>
+          <label>Transaction type
+            <select id="type">
+              <option value="expense">Expense</option>
+              <option value="income">Income</option>
+            </select>
+          </label>
+          <label>Category
+            <select id="category">
+              <option>Food</option>
+              <option>Transport</option>
+              <option>Shopping</option>
+              <option>Education</option>
+              <option>Bills</option>
+              <option>Health</option>
+              <option>Salary</option>
+              <option>Freelance</option>
+              <option>Other</option>
+            </select>
+          </label>
+          <label>Date
+            <input id="date" type="date" required>
+          </label>
+          <button type="submit">＋ Add transaction</button>
+        </form>
+      </div>
+
+      <div class="card" id="analytics">
+        <h2 class="section-title">Monthly spending</h2>
+        <div class="chart-area" id="chart"></div>
+        <div class="chart-note" id="chartNote">Add expenses to see your spending chart.</div>
+      </div>
+    </section>
+
+    <section class="card transactions" id="transactions">
+      <h2 class="section-title">Recent transactions</h2>
+      <div id="transactionList"><div class="empty">No transactions yet. Add your first transaction above!</div></div>
+    </section>
+    <div class="footer">Finora · Your money, made clearer.</div>
+  </main>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const money = value => new Intl.NumberFormat("en-IN", {
+  style: "currency", currency: "INR", maximumFractionDigits: 2
+}).format(value);
+
+const today = new Date();
+$("today").textContent = today.toLocaleDateString("en-IN", {
+  day: "numeric", month: "short", year: "numeric"
+});
+$("date").value = [
+  today.getFullYear(),
+  String(today.getMonth() + 1).padStart(2, "0"),
+  String(today.getDate()).padStart(2, "0")
+].join("-");
+
+let transactions = [];
+try {
+  transactions = JSON.parse(localStorage.getItem("finoraTransactions") || "[]");
+  if (!Array.isArray(transactions)) transactions = [];
+} catch {
+  transactions = [];
+}
+
+function save() {
+  try {
+    localStorage.setItem("finoraTransactions", JSON.stringify(transactions));
+  } catch {
+    alert("Your browser could not save transactions.");
+  }
+}
+
+function render() {
+  const income = transactions
+    .filter(t => t.type === "income")
+    .reduce((sum, t) => sum + t.amount, 0);
+  const expenses = transactions
+    .filter(t => t.type === "expense")
+    .reduce((sum, t) => sum + t.amount, 0);
+
+  $("balance").textContent = money(income - expenses);
+  $("income").textContent = money(income);
+  $("expenses").textContent = money(expenses);
+
+  const list = $("transactionList");
+  list.replaceChildren();
+
+  if (!transactions.length) {
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    empty.textContent = "No transactions yet. Add your first transaction above!";
+    list.appendChild(empty);
+  } else {
+    [...transactions].sort((a, b) => b.date.localeCompare(a.date) || b.id - a.id)
+      .slice(0, 10).forEach(t => {
+        const row = document.createElement("div");
+        row.className = "transaction";
+        const icon = document.createElement("div");
+        icon.className = "tx-icon";
+        icon.textContent = t.type === "income" ? "↙" : "↗";
+        const info = document.createElement("div");
+        info.className = "tx-info";
+        const name = document.createElement("div");
+        name.className = "tx-name";
+        name.textContent = t.name;
+        const meta = document.createElement("div");
+        meta.className = "tx-meta";
+        meta.textContent = `${t.category} · ${t.date}`;
+        info.append(name, meta);
+        const amount = document.createElement("div");
+        amount.className = "tx-amount " + (t.type === "income" ? "positive" : "negative");
+        amount.textContent = `${t.type === "income" ? "+" : "−"}${money(t.amount)}`;
+        row.append(icon, info, amount);
+        list.appendChild(row);
+      });
+  }
+  renderChart();
+}
+
+function renderChart() {
+  const now = new Date();
+  const months = [];
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+    const total = transactions
+      .filter(t => t.type === "expense" && t.date.startsWith(key))
+      .reduce((sum, t) => sum + t.amount, 0);
+    months.push({ label: d.toLocaleDateString("en-IN", { month: "short" }), total });
+  }
+  const max = Math.max(...months.map(m => m.total), 1);
+  const chart = $("chart");
+  chart.replaceChildren();
+
+  months.forEach((m, i) => {
+    const group = document.createElement("div");
+    group.className = "bar-group";
+    const bar = document.createElement("div");
+    bar.className = "bar" + (i === months.length - 1 ? " current" : "");
+    bar.style.height = `${Math.max(4, m.total / max * 125)}px`;
+    bar.title = `${m.label}: ${money(m.total)}`;
+    const label = document.createElement("div");
+    label.className = "month";
+    label.textContent = m.label;
+    group.append(bar, label);
+    chart.appendChild(group);
+  });
+  const currentTotal = months[months.length - 1].total;
+  $("chartNote").textContent = `This month: ${money(currentTotal)} in expenses`;
+}
+
+$("transactionForm").addEventListener("submit", event => {
+  event.preventDefault();
+  const name = $("name").value.trim();
+  const amount = Number($("amount").value);
+  const date = $("date").value;
+  if (!name || !Number.isFinite(amount) || amount <= 0 || !date) {
+    alert("Please enter a valid name, amount and date.");
+    return;
+  }
+  transactions.push({
+    id: Date.now(),
+    name,
+    amount,
+    type: $("type").value,
+    category: $("category").value,
+    date
+  });
+  save();
+  render();
+  event.target.reset();
+  $("date").value = [
+    today.getFullYear(),
+    String(today.getMonth() + 1).padStart(2, "0"),
+    String(today.getDate()).padStart(2, "0")
+  ].join("-");
+});
+render();
+</script>
+</body>
+
